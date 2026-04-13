@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8A9D11A12F893D220095CD19 /* QueensData in Frameworks */ = {isa = PBXBuildFile; productRef = 8A9D11A02F893D220095CD19 /* QueensData */; };
-		8A9D11A42F893D5F0095CD19 /* QueensDomain in Frameworks */ = {isa = PBXBuildFile; productRef = 8A9D11A32F893D5F0095CD19 /* QueensDomain */; };
+		8A20EECE2F8C98840011D2D0 /* QueensDomain in Frameworks */ = {isa = PBXBuildFile; productRef = 8A20EECD2F8C98840011D2D0 /* QueensDomain */; };
+		8A27D9522F8C989900FDD2C0 /* QueensData in Frameworks */ = {isa = PBXBuildFile; productRef = 8A9D11A02F893D220095CD19 /* QueensData */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,6 +29,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		8A20EECB2F8C98250011D2D0 /* QueensData */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = QueensData; sourceTree = "<group>"; };
+		8A20EECC2F8C98250011D2D0 /* QueensDomain */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = QueensDomain; sourceTree = "<group>"; };
 		8A9D11382F892F3A0095CD19 /* QueensPuzzle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QueensPuzzle.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A9D11452F892F3C0095CD19 /* QueensPuzzleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = QueensPuzzleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A9D114F2F892F3C0095CD19 /* QueensPuzzleUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = QueensPuzzleUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -70,8 +72,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8A9D11A12F893D220095CD19 /* QueensData in Frameworks */,
-				8A9D11A42F893D5F0095CD19 /* QueensDomain in Frameworks */,
+				8A27D9522F8C989900FDD2C0 /* QueensData in Frameworks */,
+				8A20EECE2F8C98840011D2D0 /* QueensDomain in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -95,6 +97,8 @@
 		8A9D112F2F892F3A0095CD19 = {
 			isa = PBXGroup;
 			children = (
+				8A20EECB2F8C98250011D2D0 /* QueensData */,
+				8A20EECC2F8C98250011D2D0 /* QueensDomain */,
 				8A9D113A2F892F3A0095CD19 /* QueensPuzzle */,
 				8A9D11482F892F3C0095CD19 /* QueensPuzzleTests */,
 				8A9D11522F892F3C0095CD19 /* QueensPuzzleUITests */,
@@ -141,7 +145,7 @@
 			name = QueensPuzzle;
 			packageProductDependencies = (
 				8A9D11A02F893D220095CD19 /* QueensData */,
-				8A9D11A32F893D5F0095CD19 /* QueensDomain */,
+				8A20EECD2F8C98840011D2D0 /* QueensDomain */,
 			);
 			productName = QueensPuzzle;
 			productReference = 8A9D11382F892F3A0095CD19 /* QueensPuzzle.app */;
@@ -227,8 +231,8 @@
 			mainGroup = 8A9D112F2F892F3A0095CD19;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				8A9D119D2F893CE30095CD19 /* XCLocalSwiftPackageReference "QueensDomain" */,
-				8A9D119F2F893D220095CD19 /* XCLocalSwiftPackageReference "QueensData" */,
+				8A20EE6E2F8C97920011D2D0 /* XCLocalSwiftPackageReference "QueensData" */,
+				8A20EE9C2F8C97D10011D2D0 /* XCLocalSwiftPackageReference "QueensDomain" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 8A9D11392F892F3A0095CD19 /* Products */;
@@ -619,25 +623,25 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		8A9D119D2F893CE30095CD19 /* XCLocalSwiftPackageReference "QueensDomain" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = QueensDomain;
-		};
-		8A9D119F2F893D220095CD19 /* XCLocalSwiftPackageReference "QueensData" */ = {
+		8A20EE6E2F8C97920011D2D0 /* XCLocalSwiftPackageReference "QueensData" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = QueensData;
+		};
+		8A20EE9C2F8C97D10011D2D0 /* XCLocalSwiftPackageReference "QueensDomain" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = QueensDomain;
 		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		8A20EECD2F8C98840011D2D0 /* QueensDomain */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8A20EE9C2F8C97D10011D2D0 /* XCLocalSwiftPackageReference "QueensDomain" */;
+			productName = QueensDomain;
+		};
 		8A9D11A02F893D220095CD19 /* QueensData */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = QueensData;
-		};
-		8A9D11A32F893D5F0095CD19 /* QueensDomain */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 8A9D119D2F893CE30095CD19 /* XCLocalSwiftPackageReference "QueensDomain" */;
-			productName = QueensDomain;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

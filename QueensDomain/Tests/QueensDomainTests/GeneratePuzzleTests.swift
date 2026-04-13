@@ -1,25 +1,26 @@
-import XCTest
+import Testing
 @testable import QueensDomain
 
-final class GeneratePuzzleTests: XCTestCase {
+@Suite("GeneratePuzzleUseCase")
+struct GeneratePuzzleTests {
 
     private let sut = GeneratePuzzleUseCase()
 
     // MARK: - Board structure
 
-    func test_generatesCorrectSize_forEachSupportedN() {
-        for n in 4...15 {
-            let board = sut.execute(size: n)
-            XCTAssertEqual(board.size, n, "Board size mismatch for n=\(n)")
-            XCTAssertEqual(board.cells.count, n)
-            XCTAssertTrue(board.cells.allSatisfy { $0.count == n })
-        }
+    @Test("Generates correct size for each supported N", arguments: 4...15)
+    func generatesCorrectSize(n: Int) {
+        let board = sut.execute(size: n)
+        #expect(board.size == n)
+        #expect(board.cells.count == n)
+        #expect(board.cells.allSatisfy { $0.count == n })
     }
 
     // MARK: - All cells initialise empty
 
-    func test_allCellsStartEmpty() {
+    @Test("All cells start empty and conflict-free")
+    func allCellsStartEmpty() {
         let board = sut.execute(size: 7)
-        XCTAssertTrue(board.allCells.allSatisfy { $0.state == .empty && !$0.isConflict })
+        #expect(board.allCells.allSatisfy { $0.state == .empty && !$0.isConflict })
     }
 }

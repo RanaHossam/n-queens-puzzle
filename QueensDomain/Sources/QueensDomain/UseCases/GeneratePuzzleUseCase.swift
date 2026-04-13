@@ -16,14 +16,11 @@ public struct GeneratePuzzleUseCase {
 
     // MARK: - Public interface
     public func execute(size: Int) -> GameBoard {
-        let solution = findSolution(size: size)
-
         let cells: [[Cell]] = (0..<size).map { row in
             (0..<size).map { col in
                 Cell(position: Position(row: row, col: col))
             }
         }
-
         return GameBoard(size: size, cells: cells)
     }
     

@@ -1,57 +1,65 @@
-import XCTest
+import Testing
 @testable import QueensDomain
 
-final class UpdateGameStateUseCaseTests: XCTestCase {
+@Suite("UpdateGameStateUseCase")
+struct UpdateGameStateUseCaseTests {
 
-    private var repo: MockGameRepository!
-    private var sut: UpdateGameStateUseCase!
+    // MARK: - Helpers
 
-    override func setUp() {
-        repo = MockGameRepository()
-        sut = UpdateGameStateUseCase(gameRepository: repo)
+    private func makeSUT() -> (sut: UpdateGameStateUseCase, repo: MockGameRepository) {
+        let repo = MockGameRepository()
+        return (UpdateGameStateUseCase(gameRepository: repo), repo)
     }
 
     // MARK: - save
 
-    func test_save_persistsStateToRepo() {
-        let state = GameState(board: .mockEmpty(size: 6), elapsedSeconds: 30)
-        sut.save(with: state)
-        XCTAssertEqual(repo.savedStates.count, 1)
-        XCTAssertEqual(repo.savedStates.first?.elapsedSeconds, 30)
-        XCTAssertEqual(repo.savedStates.first?.board.size, 6)
+    @Test("save persists state to repo")
+    func savePersistsState() {
+        let (sut, repo) = makeSUT()
+        sut.save(with: GameState(board: .mockEmpty(size: 6), elapsedSeconds: 30))
+        #expect(repo.savedStates.count == 1)
+        #expect(repo.savedStates.first?.elapsedSeconds == 30)
+        #expect(repo.savedStates.first?.board.size == 6)
     }
 
-    func test_save_silentlyIgnoresRepoError() {
+    @Test("save silently ignores repo error")
+    func saveSilentlyIgnoresError() {
+        let (sut, repo) = makeSUT()
         repo.shouldThrowOnSave = true
-        let state = GameState(board: .mockEmpty(size: 4))
-        // Must not crash — UpdateGameStateUseCase uses try?
-        sut.save(with: state)
-        XCTAssertTrue(repo.savedStates.isEmpty)
+        sut.save(with: GameState(board: .mockEmpty(size: 4)))
+        #expect(repo.savedStates.isEmpty)
     }
 
-    func test_save_canBeCalledMultipleTimes() {
+    @Test("save can be called multiple times")
+    func saveCanBeCalledMultipleTimes() {
+        let (sut, repo) = makeSUT()
         sut.save(with: GameState(board: .mockEmpty(size: 4)))
         sut.save(with: GameState(board: .mockEmpty(size: 6)))
-        XCTAssertEqual(repo.savedStates.count, 2)
+        #expect(repo.savedStates.count == 2)
     }
 
     // MARK: - clear
 
-    func test_clear_callsRepoOnce() {
+    @Test("clear calls repo once")
+    func clearCallsRepoOnce() {
+        let (sut, repo) = makeSUT()
         sut.clear()
-        XCTAssertEqual(repo.clearCallCount, 1)
+        #expect(repo.clearCallCount == 1)
     }
 
-    func test_clear_nilsOutStoredState() {
+    @Test("clear nils out stored state")
+    func clearNilsOutStoredState() {
+        let (sut, repo) = makeSUT()
         repo.stubbedState = GameState(board: .mockEmpty(size: 4))
         sut.clear()
-        XCTAssertNil(repo.stubbedState)
+        #expect(repo.stubbedState == nil)
     }
 
-    func test_clear_silentlyIgnoresRepoError() {
+    @Test("clear silently ignores repo error")
+    func clearSilentlyIgnoresError() {
+        let (sut, repo) = makeSUT()
         repo.shouldThrowOnClear = true
-        // Must not crash
         sut.clear()
-        XCTAssertEqual(repo.clearCallCount, 0)
+        #expect(repo.clearCallCount == 0)
     }
 }

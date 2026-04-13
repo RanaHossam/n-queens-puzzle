@@ -1,36 +1,43 @@
-import XCTest
+import Testing
 import Combine
 @testable import QueensDomain
 
-final class HasPendingGameUseCaseTests: XCTestCase {
+@Suite("HasPendingGameUseCase")
+struct HasPendingGameUseCaseTests {
 
-    private var repo: MockGameRepository!
-    private var sut: HasPendingGameUseCase!
-    private var cancellables: Set<AnyCancellable> = []
+    // MARK: - Helpers
 
-    override func setUp() {
-        repo = MockGameRepository()
-        sut = HasPendingGameUseCase(gameRepository: repo)
+    private func makeSUT() -> (sut: HasPendingGameUseCase, repo: MockGameRepository) {
+        let repo = MockGameRepository()
+        return (HasPendingGameUseCase(gameRepository: repo), repo)
     }
 
-    func test_returnsTrue_whenRepoDoesContinue() async throws {
+    // MARK: - Tests
+
+    @Test("Returns true when repo should display continue")
+    func returnsTrueWhenRepoDoesContinue() async throws {
+        let (sut, repo) = makeSUT()
         repo.stubbedShouldDisplayContinue = true
-        let result = try await sut.invoke()
-        XCTAssertTrue(result)
+        #expect(try await sut.invoke() == true)
     }
 
-    func test_returnsFalse_whenRepoDoesNotContinue() async throws {
+    @Test("Returns false when repo should not display continue")
+    func returnsFalseWhenRepoDoesNotContinue() async throws {
+        let (sut, repo) = makeSUT()
         repo.stubbedShouldDisplayContinue = false
-        let result = try await sut.invoke()
-        XCTAssertFalse(result)
+        #expect(try await sut.invoke() == false)
     }
 
-    func test_stateChanged_forwardsRepoPublisher() {
-        let expectation = expectation(description: "stateChanged fires")
-        sut.stateChanged
-            .sink { expectation.fulfill() }
-            .store(in: &cancellables)
-        repo.triggerStateChanged()
-        wait(for: [expectation], timeout: 1)
+    @Test("stateChanged forwards repo publisher")
+    func stateChangedForwardsRepoPublisher() async {
+        let (sut, repo) = makeSUT()
+        var cancellables = Set<AnyCancellable>()
+
+        await confirmation("stateChanged fires") { confirm in
+            sut.stateChanged
+                .sink { confirm() }
+                .store(in: &cancellables)
+            repo.triggerStateChanged()
+        }
     }
 }

@@ -1,99 +1,90 @@
-import XCTest
+import Testing
 @testable import QueensDomain
 
-final class BestTimeUseCaseTests: XCTestCase {
+@Suite("BestTimeUseCase")
+struct BestTimeUseCaseTests {
 
-    private var repo: MockBestTimesRepository!
-    private var sut: BestTimeUseCase!
+    // MARK: - Helpers
 
-    override func setUp() {
-        repo = MockBestTimesRepository()
-        sut = BestTimeUseCase(bestTimesRepository: repo)
+    private func makeSUT() -> (sut: BestTimeUseCase, repo: MockBestTimesRepository) {
+        let repo = MockBestTimesRepository()
+        return (BestTimeUseCase(bestTimesRepository: repo), repo)
     }
 
     // MARK: - getBest
 
-    func test_getBest_returnsNil_whenNoRecordExists() async throws {
-        let result = try await sut.getBest(for: 8)
-        XCTAssertNil(result)
+    @Test("getBest returns nil when no record exists")
+    func getBestReturnsNilWhenNoRecord() async throws {
+        let (sut, _) = makeSUT()
+        #expect(try await sut.getBest(for: 8) == nil)
     }
 
-    func test_getBest_returnsBestTime_forMatchingSize() async throws {
-        repo.stubbedTimes = [
-            BestTime(boardSize: 8, seconds: 45),
-            BestTime(boardSize: 6, seconds: 30)
-        ]
+    @Test("getBest returns matching size")
+    func getBestReturnsMatchingSize() async throws {
+        let (sut, repo) = makeSUT()
+        repo.stubbedTimes = [BestTime(boardSize: 8, seconds: 45), BestTime(boardSize: 6, seconds: 30)]
         let result = try await sut.getBest(for: 8)
-        XCTAssertEqual(result?.boardSize, 8)
-        XCTAssertEqual(result?.seconds, 45)
+        #expect(result?.boardSize == 8)
+        #expect(result?.seconds == 45)
     }
 
-    func test_getBest_returnsNil_whenSizeDoesNotMatch() async throws {
+    @Test("getBest returns nil when size does not match")
+    func getBestReturnsNilWhenSizeDoesNotMatch() async throws {
+        let (sut, repo) = makeSUT()
         repo.stubbedTimes = [BestTime(boardSize: 6, seconds: 30)]
-        let result = try await sut.getBest(for: 8)
-        XCTAssertNil(result)
+        #expect(try await sut.getBest(for: 8) == nil)
     }
 
-    func test_getBest_returnsLowest_whenMultipleTimesForSameSize() async throws {
-        repo.stubbedTimes = [
-            BestTime(boardSize: 8, seconds: 60),
-            BestTime(boardSize: 8, seconds: 30)
-        ]
-        let result = try await sut.getBest(for: 8)
-        XCTAssertEqual(result?.seconds, 30)
+    @Test("getBest returns lowest when multiple times for same size")
+    func getBestReturnsLowest() async throws {
+        let (sut, repo) = makeSUT()
+        repo.stubbedTimes = [BestTime(boardSize: 8, seconds: 60), BestTime(boardSize: 8, seconds: 30)]
+        #expect(try await sut.getBest(for: 8)?.seconds == 30)
     }
 
-    func test_getBest_throwsWhenRepoThrows() async {
+    @Test("getBest throws when repo throws")
+    func getBestThrowsWhenRepoThrows() async {
+        let (sut, repo) = makeSUT()
         repo.shouldThrowOnFetch = true
-        await XCTAssertThrowsErrorAsync(try await sut.getBest(for: 8))
+        await #expect(throws: (any Error).self) { try await sut.getBest(for: 8) }
     }
 
     // MARK: - save
 
-    func test_save_persistsToRepo() async throws {
-        let record = BestTime(boardSize: 8, seconds: 42)
-        try await sut.save(bestTime: record)
-        XCTAssertEqual(repo.savedTimes.count, 1)
-        XCTAssertEqual(repo.savedTimes.first?.seconds, 42)
+    @Test("save persists to repo")
+    func savePersistsToRepo() async throws {
+        let (sut, repo) = makeSUT()
+        try await sut.save(bestTime: BestTime(boardSize: 8, seconds: 42))
+        #expect(repo.savedTimes.count == 1)
+        #expect(repo.savedTimes.first?.seconds == 42)
     }
 
-    func test_save_throwsWhenRepoThrows() async {
+    @Test("save throws when repo throws")
+    func saveThrowsWhenRepoThrows() async {
+        let (sut, repo) = makeSUT()
         repo.shouldThrowOnSave = true
-        let record = BestTime(boardSize: 8, seconds: 42)
-        await XCTAssertThrowsErrorAsync(try await sut.save(bestTime: record))
+        await #expect(throws: (any Error).self) { try await sut.save(bestTime: BestTime(boardSize: 8, seconds: 42)) }
     }
 
     // MARK: - fetchAll
 
-    func test_fetchAll_returnsAllStoredTimes() async throws {
-        repo.stubbedTimes = [
-            BestTime(boardSize: 4, seconds: 10),
-            BestTime(boardSize: 8, seconds: 55)
-        ]
-        let result = try await sut.fetchAll()
-        XCTAssertEqual(result.count, 2)
+    @Test("fetchAll returns all stored times")
+    func fetchAllReturnsAllTimes() async throws {
+        let (sut, repo) = makeSUT()
+        repo.stubbedTimes = [BestTime(boardSize: 4, seconds: 10), BestTime(boardSize: 8, seconds: 55)]
+        #expect(try await sut.fetchAll().count == 2)
     }
 
-    func test_fetchAll_returnsEmpty_whenNoTimesStored() async throws {
-        let result = try await sut.fetchAll()
-        XCTAssertTrue(result.isEmpty)
+    @Test("fetchAll returns empty when nothing stored")
+    func fetchAllReturnsEmptyWhenNothingStored() async throws {
+        let (sut, _) = makeSUT()
+        #expect(try await sut.fetchAll().isEmpty)
     }
 
-    func test_fetchAll_throwsWhenRepoThrows() async {
+    @Test("fetchAll throws when repo throws")
+    func fetchAllThrowsWhenRepoThrows() async {
+        let (sut, repo) = makeSUT()
         repo.shouldThrowOnFetch = true
-        await XCTAssertThrowsErrorAsync(try await sut.fetchAll())
+        await #expect(throws: (any Error).self) { try await sut.fetchAll() }
     }
-}
-
-// MARK: - Async throw helper
-
-func XCTAssertThrowsErrorAsync<T>(
-    _ expression: @autoclosure () async throws -> T,
-    file: StaticString = #filePath,
-    line: UInt = #line
-) async {
-    do {
-        _ = try await expression()
-        XCTFail("Expected error to be thrown", file: file, line: line)
-    } catch {}
 }

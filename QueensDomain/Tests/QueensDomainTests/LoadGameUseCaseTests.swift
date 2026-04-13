@@ -1,32 +1,38 @@
-import XCTest
+import Testing
 @testable import QueensDomain
 
-final class LoadGameUseCaseTests: XCTestCase {
+@Suite("LoadGameUseCase")
+struct LoadGameUseCaseTests {
 
-    private var repo: MockGameRepository!
-    private var sut: LoadGameUseCase!
+    // MARK: - Helpers
 
-    override func setUp() {
-        repo = MockGameRepository()
-        sut = LoadGameUseCase(gameRepository: repo)
+    private func makeSUT() -> (sut: LoadGameUseCase, repo: MockGameRepository) {
+        let repo = MockGameRepository()
+        return (LoadGameUseCase(gameRepository: repo), repo)
     }
 
-    func test_returnsState_whenRepoHasOne() throws {
-        let state = GameState(board: .mockEmpty(size: 4))
-        repo.stubbedState = state
+    // MARK: - Tests
+
+    @Test("Returns saved state when repo has one")
+    func returnsStateWhenRepoHasOne() throws {
+        let (sut, repo) = makeSUT()
+        repo.stubbedState = GameState(board: .mockEmpty(size: 4))
         let result = try sut.invoke()
-        XCTAssertNotNil(result)
-        XCTAssertEqual(result?.board.size, 4)
+        #expect(result != nil)
+        #expect(result?.board.size == 4)
     }
 
-    func test_returnsNil_whenRepoIsEmpty() throws {
-        repo.stubbedState = nil
+    @Test("Returns nil when repo is empty")
+    func returnsNilWhenRepoIsEmpty() throws {
+        let (sut, _) = makeSUT()
         let result = try sut.invoke()
-        XCTAssertNil(result)
+        #expect(result == nil)
     }
 
-    func test_propagatesThrow_whenRepoThrows() {
+    @Test("Propagates throw when repo throws")
+    func propagatesThrowWhenRepoThrows() {
+        let (sut, repo) = makeSUT()
         repo.shouldThrowOnLoad = true
-        XCTAssertThrowsError(try sut.invoke())
+        #expect(throws: (any Error).self) { try sut.invoke() }
     }
 }
