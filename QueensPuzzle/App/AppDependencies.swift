@@ -13,33 +13,24 @@ struct AppDependencies {
     let checkWin: CheckWinUseCase
     let bestTimesUseCase: BestTimeUseCase
     let updateStateUseCase: UpdateGameStateUseCase
-    let router: Router
-    let homeViewModel: HomeViewModel
+    let hasPendingGameUseCase: HasPendingGameUseCase
+    let loadGameUseCase: LoadGameUseCase
 
     init() {
         let gameRepo = GameRepository()
         let bestTimesRepo = BestTimesRepository()
-
         gameRepository = gameRepo
         generatePuzzle = GeneratePuzzleUseCase()
         validateMove = ValidateMoveUseCase()
         checkWin = CheckWinUseCase(validateMove: validateMove)
+        loadGameUseCase = LoadGameUseCase(gameRepository: gameRepo)
         bestTimesUseCase = BestTimeUseCase(bestTimesRepository: bestTimesRepo)
         updateStateUseCase = UpdateGameStateUseCase(gameRepository: gameRepository)
-        router = Router()
-        homeViewModel = HomeViewModel(
-            loadGameUseCase: LoadGameUseCase(gameRepository: gameRepo),
-            hasPendingGameUseCase: HasPendingGameUseCase(gameRepository: gameRepo),
-            bestTimeUseCase: bestTimesUseCase,
-            updateStateUseCase: updateStateUseCase,
-            generatePuzzle: generatePuzzle,
-            router: router
-        )
+        hasPendingGameUseCase = HasPendingGameUseCase(gameRepository: gameRepo)
     }
 }
 
-// TODO for tests, inject repos in the init to handle tests
 extension AppDependencies {
-    static let mock: AppDependencies  = AppDependencies() // todo replace with mock dependencies
+    static let `default`: AppDependencies  = AppDependencies()
 }
 

@@ -9,12 +9,39 @@ import SwiftUI
 import QueensDomain
 import Combine
 
-public struct HomeView: View {
+// Wrapper to pass view model initializers explicitly to the content view, as in the init the env vars are not yet loaded
 
+struct HomeView: View {
+    
+    @Environment(\.dependenciesContainer) private var dependencies
     @EnvironmentObject var router: Router
-    @ObservedObject var viewModel: HomeViewModel
-    @Environment(\.appTheme) private var theme
 
+    var body: some View {
+        HomeContentView(
+            dependencies: dependencies,
+            router: router
+        )
+    }
+}
+
+public struct HomeContentView: View {
+    
+    @StateObject var viewModel: HomeViewModel
+    @Environment(\.appTheme) private var theme
+    @EnvironmentObject var router: Router
+    
+    init(dependencies: AppDependencies, router: Router) {
+        let viewModel = HomeViewModel(
+            loadGameUseCase: dependencies.loadGameUseCase,
+            hasPendingGameUseCase: dependencies.hasPendingGameUseCase,
+            bestTimeUseCase: dependencies.bestTimesUseCase,
+            updateStateUseCase: dependencies.updateStateUseCase,
+            generatePuzzle: dependencies.generatePuzzle,
+            router: router
+        )
+        self._viewModel = StateObject(wrappedValue: viewModel)
+    }
+    
     public var body: some View {
         NavigationStack(path: $router.path) {
             Group {
@@ -147,8 +174,3 @@ public struct HomeView: View {
         }
     }
 }
-
-
-//#Preview {
-//    HomeView(viewModel: .init(gameRepository: GameRepository(), bestTimesRepository: BestTimesRepository(), generatePuzzle: GeneratePuzzleUseCase(), hasPendingGameUseCase: HasPendingGameUseCase(), router: Router()))
-//}

@@ -12,11 +12,12 @@ struct QueensGameApp: App {
 
     private let dependencies = AppDependencies()
     @State private var themeStore = ThemeStore()
-
+    @State private var router = Router()
+    
     var body: some Scene {
         WindowGroup {
-            HomeView(viewModel: dependencies.homeViewModel)
-                .environmentObject(dependencies.router)
+            HomeView()
+                .environmentObject(router)
                 .environment(\.dependenciesContainer, dependencies)
                 .environment(\.appTheme, themeStore.current)
                 .environment(themeStore)
@@ -25,5 +26,5 @@ struct QueensGameApp: App {
 }
 
 extension EnvironmentValues {
-    @Entry var dependenciesContainer: AppDependencies = .mock
+    @Entry var dependenciesContainer: AppDependencies = .default
 }
