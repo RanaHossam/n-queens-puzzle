@@ -51,6 +51,7 @@ QueensData          →  QueensDomain
 - One queen per **row** — enforced by backtracking row-by-row in `GeneratePuzzleUseCase`
 - One queen per **column** — tracked via `colsUsed` set during generation; checked in `ValidateMoveUseCase`
 - No two queens on the same **diagonal** — `row - col` (main) and `row + col` (anti) sets during generation; `abs(row-row) == abs(col-col)` in `Position.conflicts(with:)`
+- Maxiumum N Size is 15 as anymore makes interaction  with the board very hard
 
 ### Tap cycle
 
