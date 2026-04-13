@@ -1,0 +1,24 @@
+//
+//  ShakeEffect.swift
+//  QueensPuzzle
+//
+//  Created by Rana Hossam on 12/04/2026.
+//
+
+import Foundation
+import SwiftUI
+
+struct ShakeEffect: GeometryEffect {
+    var amount: CGFloat = 8
+    var shakesPerUnit: CGFloat = 3
+    var animatableData: CGFloat
+
+    func effectValue(size: CGSize) -> ProjectionTransform {
+        ProjectionTransform(
+            CGAffineTransform(
+                translationX: amount * sin(animatableData * .pi * shakesPerUnit),
+                y: 0
+            )
+        )
+    }
+}
