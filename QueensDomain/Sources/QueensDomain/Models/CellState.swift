@@ -9,4 +9,5 @@ public enum CellState: Int, Codable, Sendable {
     case empty
     case marked
     case queen
+    
 }

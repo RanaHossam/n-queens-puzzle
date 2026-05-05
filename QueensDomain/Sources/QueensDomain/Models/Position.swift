@@ -16,8 +16,8 @@ public struct Position: Hashable, Codable, Sendable {
     }
     
     public func conflicts(with other: Position) -> Bool {
-        return row == other.row ||
-                   col == other.col ||
-                   abs(row - other.row) == abs(col - other.col)
+        let firstCheck = abs(row - other.row) == 1 && abs(col - other.col) == 2
+        let oppositeCheck =  abs(row - other.row) == 2 && abs(col - other.col) == 1
+        return firstCheck || oppositeCheck
     }
 }

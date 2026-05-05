@@ -28,7 +28,9 @@ public struct ValidateMoveUseCase {
     }
 
     // MARK: - Private
-
+    
+    
+// there exists no knight in either r+-1, and col +- 2, or col+-1, row+-2
     private func findConflicts(queens: [Position]) -> Set<Position> {
         var conflicts = Set<Position>()
 
@@ -36,8 +38,9 @@ public struct ValidateMoveUseCase {
             for j in (i + 1)..<queens.count {
                 let a = queens[i]
                 let b = queens[j]
-
-                if a.row == b.row || a.col == b.col || a.conflicts(with: b) {
+                let firstCheck = abs(a.row - b.row) == 1 && abs(a.col - b.col) == 2
+                let oppositeCheck =  abs(a.row - b.row) == 2 && abs(a.col - b.col) == 1
+                if firstCheck || oppositeCheck || a.conflicts(with: b){
                     conflicts.insert(a)
                     conflicts.insert(b)
                 }

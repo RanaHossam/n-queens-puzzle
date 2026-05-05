@@ -106,7 +106,7 @@ struct CellView: View {
         Image(systemName: state == .queen ? "crown.fill": "xmark")
             .resizable()
             .scaledToFit()
-            .frame(maxWidth: 28, maxHeight: 28)
+            .frame(maxWidth: 28, maxHeight: 28) // TODO: - optimize for iPAD
             .padding(Spacing.xs)
     }
     

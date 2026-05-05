@@ -34,3 +34,5 @@ extension AppDependencies {
     static let `default`: AppDependencies  = AppDependencies()
 }
 
+// Knights attack in L shape, N * N
+// Lshaped move 1 sq in a direction and 2 sqaures in the perpendicular directions
